@@ -38,6 +38,10 @@ bool checkForSemi(char c);
  * @return 1 for identify files, 3 for semi files, 2 else.
  */
 int main(int argc, char **argv) {
+    if (argc != 3) {
+        perror("NOT 3 PARAMS\n");
+        exit(-1);
+    }
     int status = 1;//status of identify
     // open the Files
     int in, out;
@@ -93,6 +97,8 @@ int main(int argc, char **argv) {
             break;
         }
     } //end of while
+    close(in);
+    close(out);
     return status;
 }
 
