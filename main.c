@@ -1,3 +1,10 @@
+/**
+ * Ori Kopel
+ * 205533151
+ * Ex3_1
+ * April 19
+ */
+
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -5,52 +12,79 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <stdbool.h>
 
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
 #define BUFFER_SIZE 10
 
+/**
+ * check if A is big letter and B is little letter (WLOG)
+ * @param A the first char
+ * @param B the sec char
+ * @return true if there is couple of letters
+ */
+bool checkForSemiAlpha(char A, char B);
+/**
+ * check for witespace
+ * @param c the char
+ * @return true if whiteSpace
+ */
+bool checkForSemi(char c);
+
+/**
+ * Main
+ * @param argc =3
+ * @param argv the pathes
+ * @return 1 for identify files, 3 for semi files, 2 else.
+ */
 int main(int argc, char **argv) {
-    int status = 1;
-    printf("%s,%s\n", argv[1], argv[2]);
+    int status = 1;//status of identify
     // open the Files
     int in, out;
     if ((in = open(argv[1], O_RDONLY)) == -1) {
         printf("ERROR\n");
-        exit(0);
+        exit(-1);
     }
     if ((out = open(argv[2], O_RDONLY)) == -1) {
         printf("ERROR\n");
-        exit(0);
+        exit(-1);
     }
     char bufA[BUFFER_SIZE];
     char bufB[BUFFER_SIZE];
+
     int indexA = 0, indexB = 0;
-    size_t reader, readerB;
+    size_t readerA = 0, readerB = 0;
+    char A = 0, B = 0;
     while (1) {
         if ((indexA % BUFFER_SIZE) == 0) {
-            reader = read(in, bufA, sizeof(bufA));
+            readerA = read(in, bufA, sizeof(bufA));
         }
         if ((indexB % BUFFER_SIZE) == 0) {
             readerB = read(out, bufB, sizeof(bufB));
         }
-        if (reader < 0 && readerB <= 0) {
+        if (readerA < 0 && readerB < 0) {//both of the files ended
             break;
         }
-        char A = bufA[indexA % BUFFER_SIZE];
-        char B = bufB[indexB % BUFFER_SIZE];
-        if (A == B) {
+        if (readerA >= 0) {//check the next char
+            A = bufA[indexA % BUFFER_SIZE];
+        }
+        if (readerB >= 0) {
+            B = bufB[indexB % BUFFER_SIZE];
+        }
+        if (A == B) {//identify case
+            if (A == 0) {//EOF case
+                break;
+            }
             indexA++;
             indexB++;
             continue;
-        } else if (A == '\n' || A == ' ' || A == '\t') {
+        } else if (checkForSemi(A)) {//this case is semi because A!=B
             status = 3;
             indexA++;
-        } else if (B == '\n' || B == ' ' || B == "\t") {
+        } else if (checkForSemi(B)) {
             status = 3;
             indexB++;
-        } else if (abs(A - B) == abs('A' - 'a') && (isalpha(A) && isalpha(B))) {
+        } else if (checkForSemiAlpha(A, B)) {
             status = 3;
             indexA++;
             indexB++;
@@ -59,14 +93,16 @@ int main(int argc, char **argv) {
             break;
         }
     } //end of while
-    if (status == 2) {
-        printf("2");
-    } else if (status == 3) {
-        printf("3");
-    } else if (status == 1) {
-        printf("1");
-    }
-    return 0;
+    return status;
+}
+
+
+bool checkForSemi(char c) {
+    return (c == '\n' || c == ' ' || c == '\t');
+}
+
+bool checkForSemiAlpha(char A, char B) {
+    return (abs(A - B) == abs('A' - 'a') && (isalpha(A) && isalpha(B)));
 }
 
 #pragma clang diagnostic pop
