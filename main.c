@@ -24,6 +24,7 @@
  * @return true if there is couple of letters
  */
 bool checkForSemiAlpha(char A, char B);
+
 /**
  * check for witespace
  * @param c the char
@@ -42,7 +43,6 @@ int main(int argc, char **argv) {
         perror("NOT 3 PARAMS\n");
         exit(-1);
     }
-    //  printf("\nfiles:%s\n%s\n", argv[1], argv[2]);
     int status = 1;//status of identify
     // open the Files
     int in, out;
@@ -103,7 +103,6 @@ int main(int argc, char **argv) {
     return status;
 }
 
-
 bool checkForSemi(char c) {
     return (c == '\n' || c == ' ' || c == '\t');
 }
@@ -111,5 +110,3 @@ bool checkForSemi(char c) {
 bool checkForSemiAlpha(char A, char B) {
     return (abs(A - B) == abs('A' - 'a') && (isalpha(A) && isalpha(B)));
 }
-
-#pragma clang diagnostic pop
