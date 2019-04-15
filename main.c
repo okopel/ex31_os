@@ -42,15 +42,16 @@ int main(int argc, char **argv) {
         perror("NOT 3 PARAMS\n");
         exit(-1);
     }
+    //  printf("\nfiles:%s\n%s\n", argv[1], argv[2]);
     int status = 1;//status of identify
     // open the Files
     int in, out;
     if ((in = open(argv[1], O_RDONLY)) == -1) {
-        printf("ERROR\n");
+        printf("ERROR open argv1\n");
         exit(-1);
     }
     if ((out = open(argv[2], O_RDONLY)) == -1) {
-        printf("ERROR\n");
+        printf("ERROR open argv2\n");
         exit(-1);
     }
     char bufA[BUFFER_SIZE];
@@ -66,7 +67,7 @@ int main(int argc, char **argv) {
         if ((indexB % BUFFER_SIZE) == 0) {
             readerB = read(out, bufB, sizeof(bufB));
         }
-        if (readerA < 0 && readerB < 0) {//both of the files ended
+        if (readerA <= 0 && readerB <= 0) {//both of the files ended
             break;
         }
         if (readerA >= 0) {//check the next char
